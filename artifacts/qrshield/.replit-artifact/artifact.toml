@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "QRShield"
+description = "An academic QR payment integrity simulator for generating fictional signed QR payloads, demonstrating tampering, and verifying integrity with backend HMAC-SHA256."
+version = "1.0.0"
+id = "artifacts/qrshield"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21542
+
+[services.development]
+run = "pnpm --filter @workspace/qrshield run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/qrshield", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/qrshield/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21542"
+BASE_PATH = "/"

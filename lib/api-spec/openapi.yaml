@@ -3,14 +3,137 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: API contract for QRShield's fictional payment integrity simulator.
 servers:
   - url: /api
     description: Base API path
 tags:
+  - name: qr
+    description: Fictional payment QR generation and integrity operations
+  - name: history
+    description: Temporary in-memory demonstration activity
   - name: health
-    description: Health operations
+    description: Service health and live activity metrics
 paths:
+  /qr/generate:
+    post:
+      operationId: generateQr
+      tags: [qr]
+      summary: Create a fictional signed payment payload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentInput"
+      responses:
+        "200":
+          description: Signed fictional payment payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneratedQr"
+        "400":
+          description: Invalid payment fields
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /qr/tamper:
+    post:
+      operationId: simulateTampering
+      tags: [qr]
+      summary: Simulate untrusted edits while preserving the original signature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TamperInput"
+      responses:
+        "200":
+          description: Modified payload and changed field names
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TamperResult"
+        "400":
+          description: Invalid attack request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /qr/verify:
+    post:
+      operationId: verifyQr
+      tags: [qr]
+      summary: Verify a payload against its supplied HMAC-SHA256 signature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyInput"
+      responses:
+        "200":
+          description: Integrity verification result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerificationResult"
+        "400":
+          description: Invalid payload or signature format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /history:
+    get:
+      operationId: getHistory
+      tags: [history]
+      summary: Get temporary activity history, newest first
+      responses:
+        "200":
+          description: Activity history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HistoryResponse"
+    delete:
+      operationId: clearHistory
+      tags: [history]
+      summary: Clear temporary activity history
+      responses:
+        "200":
+          description: History cleared
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HistoryClearResult"
+  /stats:
+    get:
+      operationId: getStats
+      tags: [health]
+      summary: Get counts derived from real session activity
+      responses:
+        "200":
+          description: Session activity metrics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActivityStats"
+  /health:
+    get:
+      operationId: getHealth
+      tags: [health]
+      summary: Check API health
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
   /healthz:
     get:
       operationId: healthCheck
@@ -26,11 +149,222 @@ paths:
                 $ref: "#/components/schemas/HealthStatus"
 components:
   schemas:
+    PaymentPayload:
+      type: object
+      additionalProperties: false
+      required:
+        - merchant_name
+        - merchant_id
+        - amount
+        - transaction_reference
+        - payment_note
+      properties:
+        merchant_name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        merchant_id:
+          type: string
+          minLength: 1
+          maxLength: 40
+        amount:
+          type: string
+          pattern: "^[0-9]+\\.[0-9]{2}$"
+          description: Positive INR amount normalized to two decimal places.
+        transaction_reference:
+          type: string
+          minLength: 1
+          maxLength: 64
+        payment_note:
+          type: ["string", "null"]
+          maxLength: 120
+    PaymentInput:
+      type: object
+      additionalProperties: false
+      required:
+        - merchant_name
+        - merchant_id
+        - amount
+        - transaction_reference
+      properties:
+        merchant_name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        merchant_id:
+          type: string
+          minLength: 1
+          maxLength: 40
+        amount:
+          type: number
+          exclusiveMinimum: 0
+        transaction_reference:
+          type: string
+          minLength: 1
+          maxLength: 64
+        payment_note:
+          type: string
+          maxLength: 120
+    GeneratedQr:
+      type: object
+      required: [payload, signature, qr_text]
+      properties:
+        payload:
+          $ref: "#/components/schemas/PaymentPayload"
+        signature:
+          type: string
+          pattern: "^[a-f0-9]{64}$"
+        qr_text:
+          type: string
+          description: JSON string containing the payload and signature for QR rendering.
+    TamperInput:
+      type: object
+      additionalProperties: false
+      required: [payload, signature, attack_type]
+      properties:
+        payload:
+          $ref: "#/components/schemas/PaymentPayload"
+        signature:
+          type: string
+          pattern: "^[a-f0-9]{64}$"
+        attack_type:
+          type: string
+          enum: [recipient, amount, multiple]
+        replacement_merchant_id:
+          type: string
+          minLength: 1
+          maxLength: 40
+        replacement_merchant_name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        replacement_amount:
+          type: number
+          exclusiveMinimum: 0
+    TamperResult:
+      type: object
+      required: [payload, signature, changed_fields]
+      properties:
+        payload:
+          $ref: "#/components/schemas/PaymentPayload"
+        signature:
+          type: string
+          pattern: "^[a-f0-9]{64}$"
+        changed_fields:
+          type: array
+          items:
+            type: string
+    VerifyInput:
+      type: object
+      additionalProperties: false
+      required: [payload, signature]
+      properties:
+        payload:
+          $ref: "#/components/schemas/PaymentPayload"
+        signature:
+          type: string
+          pattern: "^[a-f0-9]{64}$"
+        original_payload:
+          oneOf:
+            - $ref: "#/components/schemas/PaymentPayload"
+            - type: "null"
+    VerificationResult:
+      type: object
+      required:
+        - valid
+        - status
+        - message
+        - checked_at
+        - changed_fields
+        - expected_signature
+        - supplied_signature
+      properties:
+        valid:
+          type: boolean
+        status:
+          type: string
+          enum: [INTEGRITY_VERIFIED, TAMPERING_DETECTED]
+        message:
+          type: string
+        checked_at:
+          type: string
+          format: date-time
+        changed_fields:
+          type: array
+          items:
+            type: string
+        expected_signature:
+          type: string
+          pattern: "^[a-f0-9]{64}$"
+          description: Calculated HMAC digest; does not expose the signing key.
+        supplied_signature:
+          type: string
+    ActivityEvent:
+      type: object
+      required: [id, event_type, transaction_reference, timestamp, description, result]
+      properties:
+        id:
+          type: string
+        event_type:
+          type: string
+          enum:
+            - QR_GENERATED
+            - TAMPERING_SIMULATED
+            - INTEGRITY_VERIFIED
+            - TAMPERING_DETECTED
+            - VERIFICATION_FAILED
+        transaction_reference:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        description:
+          type: string
+        result:
+          type: string
+          enum: [SUCCESS, WARNING, FAILED]
+    HistoryResponse:
+      type: object
+      required: [events, temporary]
+      properties:
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActivityEvent"
+        temporary:
+          type: boolean
+    HistoryClearResult:
+      type: object
+      required: [cleared]
+      properties:
+        cleared:
+          type: boolean
+    ActivityStats:
+      type: object
+      required:
+        - qr_codes_generated
+        - tampering_attempts
+        - integrity_checks
+        - tampering_detected
+      properties:
+        qr_codes_generated:
+          type: integer
+        tampering_attempts:
+          type: integer
+        integrity_checks:
+          type: integer
+        tampering_detected:
+          type: integer
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
 

@@ -1,0 +1,807 @@
+# PROJECT: QRShield — QR Payment Integrity Simulator
+
+Act as a senior full-stack developer, cybersecurity engineer, and UI/UX designer. Build a complete, functional, visually impressive cybersecurity microproject called **QRShield — QR Payment Integrity Simulator**.
+
+Do not create just a landing page or static UI mockup. Build a working full-stack application with a React frontend and Python FastAPI backend. All major buttons, forms, navigation links, QR generation, tampering actions, verification results, and history records must work.
+
+The project is an academic cybersecurity demonstration. It simulates QR payment payload tampering using fictional data. It must never initiate real payments or connect to UPI or banking services.
+
+---
+
+## 1. PROJECT OBJECTIVE
+
+QRShield demonstrates how an attacker could modify payment information embedded in a QR code and how a digital integrity mechanism can detect unauthorized changes.
+
+The application should allow a user to:
+
+1. Generate a QR code containing fictional payment information.
+2. Display and inspect the original payment payload.
+3. Simulate an attacker modifying the recipient, amount, or multiple fields.
+4. Compare the original and modified payloads.
+5. Verify the payload's integrity using HMAC-SHA256.
+6. Display a clear security result indicating whether the signed data has been altered.
+7. View a session-based history of generated QR codes, tampering simulations, and verification attempts.
+
+The application should help students understand QR payment security, data integrity, message authentication, and tampering detection.
+
+## 2. REQUIRED TECHNOLOGY STACK
+
+### Frontend
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Lucide icons
+- Recharts for dashboard charts where appropriate
+- A reliable QR code rendering library
+- Responsive design for desktop, tablet, and mobile
+
+### Backend
+- Python 3
+- FastAPI
+- Uvicorn
+- Pydantic for request validation
+- Python standard-library `hmac` and `hashlib` for HMAC-SHA256
+- A Python QR-generation library if required for backend generation
+
+### Data storage
+- Do not use SQLite, PostgreSQL, MongoDB, Supabase, Firebase, or any other database.
+- Store demo activity in backend in-memory data structures.
+- Store the current original and modified payloads in application state as needed.
+- Display a clear message that history is temporary and resets when the backend restarts.
+- Do not introduce a database dependency just to store history.
+
+### Application architecture
+Create two clearly separated parts:
+
+- `frontend/` — React and TypeScript application.
+- `backend/` — Python FastAPI application.
+
+Use a clean project structure with reusable components, API utilities, typed interfaces, and a readable backend.
+
+Make the project easy to run and maintain on a Windows 11 laptop.
+
+If the Replit environment requires a different folder arrangement or workflow, adapt the structure while preserving the separation between frontend and backend.
+
+## 3. UI/UX DESIGN DIRECTION
+
+The interface must look like a premium cybersecurity SaaS dashboard, not a generic AI-generated admin template.
+
+### Visual theme
+
+Use a sophisticated dark theme with a distinctive purple-and-blue identity.
+
+Suggested colors:
+
+- Main background: `#050817`
+- Secondary background: `#0B1030`
+- Elevated panels: `#101A3B`
+- Primary purple: `#8B5CF6`
+- Violet: `#A855F7`
+- Royal blue: `#2563EB`
+- Electric blue: `#38BDF8`
+- Cyan accent: `#22D3EE`
+- Primary text: `#F1F5FF`
+- Secondary text: `#9AA8C7`
+- Success: `#34D399`
+- Warning: `#FBBF24`
+- Threat or failure: `#FB7185`
+
+Use Inter or a similar modern sans-serif font.
+
+### Design principles
+
+- Use a deep midnight-navy base.
+- Add restrained purple lighting on one side and blue/cyan lighting on the other.
+- Use radial gradients and subtle gradients within selected elements.
+- Create depth through carefully layered surfaces.
+- Use thin borders with low-opacity purple or blue tones.
+- Use subtle glassmorphism selectively.
+- Use smooth hover states and short transitions.
+- Use tasteful animated scanning lines, small glowing indicators, and a subtle QR scanning effect where appropriate.
+- Keep the layout spacious and aligned.
+- Use strong visual hierarchy and readable typography.
+- Use consistent spacing, border radii, and icon sizes.
+- Make charts, tables, badges, and forms match the dark theme.
+- Keep accessibility and contrast in mind.
+- Ensure the layout is responsive.
+
+Avoid:
+- Excessive neon glow.
+- A rainbow color palette.
+- Huge empty hero sections.
+- Repeated identical cards everywhere.
+- Excessive rounded rectangles.
+- Emoji used as primary interface icons.
+- Fake statistics presented as real security results.
+- Generic stock images.
+- Buttons that do nothing.
+- Hardcoded verification outcomes.
+
+The finished interface should look suitable for a third-year engineering cybersecurity project demonstration.
+
+## 4. APPLICATION LAYOUT
+
+Build a persistent dashboard shell.
+
+### Sidebar
+
+Create a fixed or collapsible left sidebar with:
+
+- QRShield logo featuring a shield combined with a QR-code motif.
+- Overview
+- Generate QR
+- Tampering Lab
+- Verification Center
+- Activity History
+- About the Project
+
+Use Lucide icons and a clear active-navigation indicator with a subtle purple-blue gradient.
+
+Place a small footer label:
+
+`ACADEMIC SECURITY LAB`
+
+### Top navigation bar
+
+Include:
+
+- Current page title and breadcrumb.
+- A small status indicator labelled `DEMO MODE`.
+- A compact search field if useful.
+- A notification or activity icon.
+- A profile/avatar element labelled `Security Analyst`.
+
+Do not implement fake user authentication. The profile element is decorative and should not imply that a real account system exists.
+
+### Main content area
+
+Use a polished dashboard layout with consistent margins and appropriate spacing.
+
+All pages must work through navigation without unnecessarily reloading the application.
+
+## 5. PAGE ONE — OVERVIEW DASHBOARD
+
+Create a professional cybersecurity overview screen.
+
+### Hero section
+
+Heading:
+
+`Scan smart. Trust nothing blindly.`
+
+Supporting text:
+
+`Simulate QR payment tampering, inspect payload changes, and verify message integrity in a safe environment.`
+
+Add two working buttons:
+
+- `Generate QR`
+- `Open Tampering Lab`
+
+The buttons must navigate to their respective pages.
+
+Create an abstract security illustration using CSS or SVG: a shield, QR-grid pattern, connecting lines, and subtle purple-blue lighting. Do not depend on external image downloads.
+
+### Metrics section
+
+Show four metrics:
+
+1. QR Codes Generated
+2. Tampering Attempts
+3. Integrity Checks
+4. Tampering Detected
+
+These must reflect actual session activity from the backend.
+
+On a new session, display zero or a clear empty-state value. Never invent historical activity.
+
+### Recent activity
+
+Display the most recent activity events in a clean table.
+
+Columns:
+- Event
+- Payload or transaction reference
+- Event type
+- Result
+- Timestamp
+
+Use accurate event data returned by the backend.
+
+Provide an empty state when there is no activity.
+
+### Security insight panel
+
+Heading:
+
+`Why QR integrity matters`
+
+Explain in simple language that a QR code can encode payment information, but a QR image by itself does not guarantee that the embedded data is authentic. If payment information changes after signing, a correctly implemented message-authentication check should reject it.
+
+Include a small link to the About the Project page.
+
+## 6. PAGE TWO — GENERATE QR
+
+Build a complete fictional payment QR generator.
+
+### Form fields
+
+Include:
+
+- Merchant Name
+- Merchant ID
+- Amount in INR
+- Transaction Reference
+- Optional Payment Note
+
+Use sensible demo defaults such as:
+
+- Merchant Name: `Demo Coffee Store`
+- Merchant ID: `MERCHANT_001`
+- Amount: `150`
+- Transaction Reference: generate a unique fictional reference
+- Payment Note: `Academic demonstration`
+
+Label all default values as fictional examples.
+
+Validate:
+- Merchant name must not be blank.
+- Merchant ID must not be blank.
+- Amount must be greater than zero.
+- Amount must have at most two decimal places.
+- Transaction reference must be valid and non-empty.
+- Input length limits must be enforced.
+
+### Generate action
+
+Add a prominent button:
+
+`Generate Secure Demo QR`
+
+When clicked:
+
+1. Send the payment data to the FastAPI backend.
+2. Have the backend validate the data.
+3. Generate a canonical representation of the payment payload.
+4. Create an HMAC-SHA256 signature using a backend-only secret.
+5. Return the signed payload and signature.
+6. Render a QR code containing the complete fictional payload and signature.
+7. Display the QR code in a visually attractive preview panel.
+8. Display the original payload in a formatted JSON viewer.
+9. Show the signature in a compact code panel.
+10. Add a generated event to the session history.
+
+The backend must own the signing secret. Never place the secret in React code, frontend environment variables, browser storage, or the QR payload.
+
+### QR preview controls
+
+Provide working controls for:
+
+- Download QR as PNG.
+- Copy payload.
+- Generate another QR.
+- Reset form.
+
+Show helpful success or error messages after actions.
+
+Add a label beneath the QR code:
+
+`FICTIONAL PAYMENT DATA — NOT FOR REAL PAYMENTS`
+
+The generated QR is only a signed demonstration payload. Do not pretend it is a valid UPI payment QR.
+
+## 7. PAGE THREE — TAMPERING LAB
+
+This is the main educational feature and should receive special design attention.
+
+Build an interactive attack-simulation workspace.
+
+### Layout
+
+Use a two-column comparison layout on desktop.
+
+Left side:
+`ORIGINAL PAYLOAD`
+
+Right side:
+`MODIFIED PAYLOAD`
+
+Each side should show a formatted JSON payload with syntax highlighting or clear key-value styling.
+
+Use clear labels to distinguish trusted original data from simulated attacker-modified data.
+
+### Initial state
+
+If no QR has been generated, display a helpful empty state with a button to navigate to Generate QR.
+
+Do not create a fake signed payload just to fill the page.
+
+### Attack simulation controls
+
+Provide the following working actions:
+
+1. `Change Recipient`
+2. `Change Amount`
+3. `Modify Multiple Fields`
+4. `Restore Original`
+5. `Verify Modified QR`
+
+Use realistic fictional examples.
+
+Example original data:
+
+- Merchant ID: `MERCHANT_001`
+- Amount: `150.00`
+- Reference: `QR-DEMO-001`
+
+Example tampered data:
+
+- Merchant ID: `UNKNOWN_999`
+- Amount: `950.00`
+- Reference: `QR-DEMO-001`
+
+These are examples only; generate unique references where appropriate.
+
+When the user chooses an attack:
+
+- Change only the selected fields.
+- Preserve the original signature.
+- Display the exact fields that changed.
+- Highlight modified values in coral/red.
+- Highlight unchanged values in neutral text.
+- Display a clear `TAMPERING SIMULATED` indicator.
+- Record the simulation in session history.
+
+The attacker simulation must not have access to the backend signing secret.
+
+### Visual comparison
+
+Add a difference summary:
+
+- Fields modified.
+- Original amount.
+- Modified amount.
+- Original merchant.
+- Modified merchant.
+
+Only display values supported by the current application state.
+
+### Verification behavior
+
+When the user selects `Verify Modified QR`:
+
+- Send the modified payment payload and the original signature to the backend.
+- Do not generate a new signature for the modified payload.
+- Let the backend independently calculate the expected HMAC using its secret.
+- Compare the calculated signature with the supplied original signature using a timing-safe comparison such as `hmac.compare_digest`.
+- Return the verification result.
+- Show `TAMPERING DETECTED` when the signature does not match.
+- Show the reason in understandable language.
+
+If the user restores the original payload and verifies it, the result should be `INTEGRITY VERIFIED`.
+
+The result must be based on the real backend response, not on a hardcoded frontend boolean.
+
+### Teaching panel
+
+Include a small explanation:
+
+`The simulated attacker changes payment information but does not know the signing secret. The original signature no longer matches the modified payload, so verification fails.`
+
+Also explain that this is a controlled educational simulation and not a real payment interception tool.
+
+## 8. PAGE FOUR — VERIFICATION CENTER
+
+Create a dedicated integrity verification page.
+
+### Layout
+
+Use a clear security-console design with a large central verification panel.
+
+Display:
+
+- Transaction reference.
+- Merchant ID.
+- Amount.
+- Signature status.
+- Payload integrity status.
+- Verification timestamp.
+- Verification result.
+
+Provide a working button:
+
+`Verify Current Payload`
+
+Use the currently selected original or modified payload.
+
+### Possible results
+
+Success state:
+
+`INTEGRITY VERIFIED`
+
+Supporting text:
+
+`The supplied signature matches the current payload under the configured demo key.`
+
+Failure state:
+
+`TAMPERING DETECTED`
+
+Supporting text:
+
+`The supplied signature does not match the current payload. One or more signed fields may have changed.`
+
+Do not claim that a valid signature independently proves the merchant is genuine. Explain that HMAC confirms integrity relative to a trusted secret shared with the verifier.
+
+### Verification details
+
+Display:
+- Expected HMAC-SHA256.
+- Supplied signature.
+- Whether the comparison passed.
+- Fields changed, if the original payload is available.
+- A brief explanation of the result.
+
+Never reveal the HMAC secret.
+
+Avoid unnecessarily exposing sensitive information. This project only uses fictional data, but the design should still follow good security practices.
+
+## 9. PAGE FIVE — ACTIVITY HISTORY
+
+Build a searchable activity history page.
+
+### Activity types
+
+Track:
+- QR_GENERATED
+- TAMPERING_SIMULATED
+- INTEGRITY_VERIFIED
+- TAMPERING_DETECTED
+- VERIFICATION_FAILED
+
+Each event should contain:
+- Unique event ID.
+- Event type.
+- Transaction reference.
+- Timestamp in ISO 8601 format.
+- A short human-readable description.
+- Result status.
+
+### Interface
+
+Include:
+- Search by transaction reference.
+- Filter by event type.
+- Filter by result.
+- Sort newest first.
+- Refresh history.
+- Clear session history with a confirmation dialog.
+
+Use the backend as the source of truth for history.
+
+History must be stored in memory only and must reset when the backend restarts.
+
+Display this message:
+
+`Session history is temporary. No database is used.`
+
+Show an empty state when there are no records.
+
+Do not make up events to populate the table.
+
+## 10. PAGE SIX — ABOUT THE PROJECT
+
+Create an educational page explaining the project.
+
+Sections:
+
+### Project Overview
+Explain that QRShield demonstrates the risk of trusting unverified QR payment information.
+
+### The Threat
+Explain how an attacker could replace the recipient or change the amount in a payment payload.
+
+### The Defense
+Explain canonical payload serialization and HMAC-SHA256 message authentication.
+
+### How Verification Works
+
+Use a simple diagram:
+
+Original payment data → Canonical serialization → HMAC signature → QR payload → Verification → Pass or fail.
+
+For modified data:
+
+Modified payment data + Original signature → HMAC verification → Signature mismatch → Tampering detected.
+
+Create this diagram using CSS, SVG, or React components.
+
+### Important Security Limitations
+
+Clearly explain:
+
+- A QR code is a data container and does not automatically guarantee authenticity.
+- HMAC requires the signer and verifier to share a secret.
+- A valid HMAC does not independently establish merchant identity.
+- This prototype does not integrate with real UPI or banking infrastructure.
+- It does not process money or initiate transactions.
+- This is an academic demonstration, not a production payment security system.
+
+## 11. BACKEND API REQUIREMENTS
+
+Implement a functional FastAPI service with these endpoints.
+
+### POST `/api/qr/generate`
+
+Input:
+- merchant_name
+- merchant_id
+- amount
+- transaction_reference
+- payment_note
+
+Responsibilities:
+- Validate input.
+- Normalize and serialize signed fields consistently.
+- Generate HMAC-SHA256 using a secret from the backend environment.
+- Store a session event in memory.
+- Return the payload, signature, and a QR representation or the data needed by the frontend to render the QR.
+
+### POST `/api/qr/tamper`
+
+Input:
+- Original payload.
+- Requested attack type.
+- Any permitted replacement values.
+
+Supported attack types:
+- recipient
+- amount
+- multiple
+
+Responsibilities:
+- Create a modified copy of the payload.
+- Never change the original payload.
+- Preserve the original signature.
+- Return the modified payload and a list of changed fields.
+- Record the simulation event.
+
+Treat this endpoint as a simulation of untrusted client-side modification. It must not provide a signing operation to the attacker.
+
+### POST `/api/qr/verify`
+
+Input:
+- Current payload.
+- Supplied signature.
+- Optional original payload for difference reporting.
+
+Responsibilities:
+- Validate the request.
+- Recreate the canonical representation from the signed fields.
+- Calculate HMAC-SHA256 using the backend secret.
+- Compare signatures safely.
+- Return `valid`, `status`, `message`, `checked_at`, and changed fields when known.
+- Record a successful or failed verification event.
+
+The frontend must display the returned verification result without inventing it.
+
+### GET `/api/history`
+
+Return session history with the newest event first.
+
+### DELETE `/api/history`
+
+Clear the in-memory activity history for the demo session.
+
+### GET `/api/health`
+
+Return a simple health status showing that the backend is running.
+
+### Optional GET `/api/stats`
+
+Return counts derived from actual in-memory events:
+- QR codes generated.
+- Tampering simulations.
+- Integrity checks.
+- Tampering detected.
+
+Do not hardcode these counts.
+
+## 12. SECURITY IMPLEMENTATION REQUIREMENTS
+
+Implement these carefully.
+
+### HMAC signing
+
+- Use Python's `hmac` and `hashlib`.
+- Use HMAC-SHA256.
+- Load the signing secret from an environment variable such as `QRSHIELD_HMAC_SECRET`.
+- For local development only, document a safe way to configure a demo secret.
+- Never hardcode a production secret.
+- Never send the secret to the frontend.
+- Never include the secret in logs or API responses.
+
+### Canonical serialization
+
+Create a single backend function that serializes the signed fields consistently, such as with deterministic JSON serialization using sorted keys and fixed separators.
+
+Use the same canonicalization logic for signing and verification.
+
+Only include explicitly defined signed fields. Ensure that changes to any security-relevant field cause verification to fail.
+
+### Signature verification
+
+Use `hmac.compare_digest` to compare signatures.
+
+Reject missing, malformed, or invalid signatures safely.
+
+Do not trust a client-provided field such as `is_valid`, `verified`, or `tampered` to determine the result.
+
+The backend must calculate the result independently.
+
+### Input validation
+
+- Validate all request bodies with Pydantic.
+- Reject negative or zero amounts.
+- Limit text-field lengths.
+- Validate signature format.
+- Handle malformed JSON.
+- Return clear HTTP error responses.
+- Avoid exposing stack traces or internal secrets.
+
+### CORS and configuration
+
+Configure CORS for the frontend origin required by the actual development environment. Do not blindly allow every origin in production.
+
+Document any necessary Replit-specific networking configuration.
+
+### Session history
+
+Since this project must not use a database, use a simple in-memory history list with a reasonable maximum event count. State clearly that history is temporary.
+
+If multiple browser users share the same backend process, history may be shared between them. Do not describe this implementation as private per-user history unless proper session isolation is implemented.
+
+## 13. FRONTEND-BACKEND INTEGRATION
+
+Create a reusable typed API client.
+
+Centralize the backend base URL using an environment variable, for example:
+
+`VITE_API_BASE_URL`
+
+Use the actual FastAPI service URL required by the Replit environment.
+
+Handle:
+- Loading states.
+- Network errors.
+- Backend unavailable states.
+- Validation errors.
+- Successful responses.
+- Empty history.
+- Invalid or missing signatures.
+
+Use visible toasts or inline status messages.
+
+Never show a successful result before the backend confirms it.
+
+Do not silently fall back to fake data when the backend is unavailable.
+
+If the frontend cannot reach the backend, show a clear message and a retry option.
+
+Ensure all API request and response types are defined in TypeScript.
+
+## 14. REQUIRED PROJECT STRUCTURE
+
+Use a clear structure similar to:
+
+qrshield/
+  frontend/
+    src/
+      components/
+      pages/
+      hooks/
+      lib/
+      types/
+      App.tsx
+      main.tsx
+    public/
+    package.json
+    .env.example
+  backend/
+    main.py
+    requirements.txt
+    README.md
+    .env.example
+  README.md
+
+You may adapt the exact structure to the Replit workspace, but keep frontend and backend responsibilities separate.
+
+Include:
+- Root README with setup and architecture.
+- Python requirements file.
+- Frontend package configuration.
+- Example environment configuration without real secrets.
+- Meaningful error handling.
+- Comments for security-critical logic.
+
+Do not create unnecessary files or dependencies.
+
+## 15. DEMONSTRATION WORKFLOW
+
+The application must support this complete classroom demonstration:
+
+1. Open the QRShield overview dashboard.
+2. Navigate to Generate QR.
+3. Enter a fictional merchant and amount of ₹150.
+4. Generate the QR and its HMAC signature.
+5. Show the original payload and signature.
+6. Open the Tampering Lab.
+7. Change the recipient to `UNKNOWN_999`.
+8. Change the amount to ₹950.
+9. Show the original and modified payloads side by side.
+10. Highlight the altered fields.
+11. Click Verify Modified QR.
+12. Display `TAMPERING DETECTED` based on the backend's actual HMAC verification.
+13. Restore the original payload.
+14. Verify again and display `INTEGRITY VERIFIED`.
+15. Open Activity History and show the recorded events.
+
+The entire demonstration should be easy to complete in approximately three to five minutes.
+
+## 16. QUALITY AND ACCEPTANCE TESTS
+
+Before declaring the project complete, verify all of the following:
+
+- The frontend starts successfully.
+- The FastAPI backend starts successfully.
+- The frontend can communicate with the backend.
+- The sidebar navigation works.
+- QR generation creates a real scannable QR containing the fictional signed payload.
+- The original payload verifies successfully.
+- Changing the recipient invalidates the original signature.
+- Changing the amount invalidates the original signature.
+- Changing multiple signed fields invalidates the original signature.
+- Restoring the original payload allows successful verification.
+- The frontend never determines verification status independently.
+- Activity history records actual events.
+- The history can be cleared.
+- The dashboard metrics update based on backend data.
+- The signing secret is not exposed to the frontend.
+- No database is used.
+- There is no real payment integration.
+- Empty states and API errors are handled properly.
+- The interface works on common desktop and mobile screen sizes.
+- No major button is decorative or nonfunctional.
+
+Create automated backend tests for:
+1. Correct signature passes.
+2. Modified merchant ID fails.
+3. Modified amount fails.
+4. Modified transaction reference fails.
+5. Missing signature fails.
+6. Malformed signature is rejected safely.
+7. History records and clearing work.
+
+## 17. EXECUTION AND DELIVERY
+
+Build the application in the current Replit workspace.
+
+Do not stop after generating a plan or a static mockup. Implement the files, install dependencies, start the required services, test the API and frontend, and fix errors that appear.
+
+Use the supported Replit workflow to run the frontend and backend together. If the environment requires separate run configurations or separate services, configure them correctly and explain how to start each one.
+
+Do not claim that a feature works until it has been implemented and tested.
+
+At the end, provide:
+
+1. A short project architecture explanation.
+2. The final folder structure.
+3. Exact instructions to run the frontend and backend.
+4. Required environment variables.
+5. Instructions for testing the complete demonstration.
+6. Any limitations that remain.
+7. Instructions for exporting the source code to GitHub or downloading it to a Windows laptop.
+
+**Final priority:** A fully functional, attractive, easy-to-demonstrate academic cybersecurity application with real backend verification, no database, fictional payment data only, and source code that I can access and maintain.
