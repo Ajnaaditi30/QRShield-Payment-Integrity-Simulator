@@ -60,7 +60,7 @@ The main dashboard provides an overview of the QRShield application and its secu
 
 Demonstrates the generation of QR codes using payment-related information.
 
-![QR Code Generation](screenshots/qr-generation.png)
+![QR Code Generation](QR generator.png)
 
 ### 3. Payment Verification
 
