@@ -1,65 +1,207 @@
-# QRShield — QR Payment Integrity Simulator
+# 🛡️ QRShield – QR Payment Integrity Simulator
 
-QRShield is an academic cybersecurity demonstration. It creates fictional payment payloads, signs them with backend-only HMAC-SHA256, simulates untrusted changes, and verifies integrity. It does not connect to UPI or banking services, initiate payments, or process money.
+<p align="center">
+  <b>A QR Code Payment Integrity and Tampering Detection Project</b>
+</p>
 
-## Architecture
+<p align="center">
+  <img src="https://img.shields.io/badge/Project-Cybersecurity-blue" />
+  <img src="https://img.shields.io/badge/Frontend-React%20%7C%20TypeScript-61DAFB" />
+  <img src="https://img.shields.io/badge/Backend-Python%20%7C%20FastAPI-green" />
+  <img src="https://img.shields.io/badge/Status-Academic%20Project-orange" />
+</p>
 
-- `artifacts/qrshield/` — React, TypeScript, and Vite frontend.
-- `backend/main.py` — FastAPI backend, Pydantic validation, canonical JSON, HMAC signing, tampering simulation, verification, and temporary history.
-- `lib/api-spec/openapi.yaml` — source of truth for the API and generated TypeScript client.
-- `backend/tests/` — standard-library automated security tests.
-- No database is used. The activity list is stored in backend memory, is shared by users of the same process, and resets when that process restarts.
+---
 
-## Running in Replit
+## 📌 About the Project
 
-The project has separate web and API services. Start the QRShield web app and API Server workflows. The backend reads its signing key from `QRSHIELD_HMAC_SECRET`, falling back to the existing Replit `SESSION_SECRET`. For a separate deployment, configure `QRSHIELD_HMAC_SECRET` using the platform's secret manager; never put a real secret in frontend code or commit it.
+**QRShield** is a QR payment integrity simulation project designed to demonstrate how QR code payment information can be generated, checked, and verified.
 
-The API is served at `/api`. The web app uses relative same-origin API routes, and the API service handles its own routing. No database setup is required.
+The project explores security risks associated with QR-based payments, including unauthorized modifications and fraudulent QR codes.
 
-## Running on Windows 11
+It uses QR code generation and HMAC-based verification to demonstrate the importance of data integrity in digital payment systems.
 
-Install Python 3.11 or newer, Node.js, and pnpm. Open two PowerShell terminals in the project directory.
+## 🎯 Objectives
 
-### Terminal 1 — FastAPI
+- Understand security risks associated with QR-based payments.
+- Generate QR codes for payment information.
+- Demonstrate detection of modified payment data.
+- Apply cryptographic integrity verification.
+- Build a simple web-based security dashboard.
+
+## ✨ Key Features
+
+- QR code generation.
+- QR payment data verification.
+- HMAC-SHA256-based integrity checking.
+- Self-test functionality.
+- Dashboard for displaying security information.
+- Backend API integration.
+- Payment integrity simulation.
+
+*Note: Keep only features that are currently implemented and working.*
+
+## 🏗️ System Architecture
+
+```mermaid
+flowchart TD
+    A[User] --> B[React Frontend]
+    B --> C[FastAPI Backend]
+    C --> D[QR Code Generation]
+    C --> E[HMAC-SHA256 Verification]
+    D --> F[Verification Result]
+    E --> F
+    F --> B
+    B --> G[Security Dashboard]
+```
+
+## 🛠️ Technology Stack
+
+| Component | Technology |
+|---|---|
+| Frontend | React |
+| Programming Language | TypeScript |
+| Styling | Tailwind CSS |
+| Backend | Python |
+| Backend Framework | FastAPI |
+| QR Processing | Existing QR generation library |
+| Security | HMAC-SHA256 |
+| Development Tools | VS Code, Git, GitHub |
+
+## 🔄 Project Workflow
+
+1. The user enters payment-related information.
+2. The frontend sends the information to the backend.
+3. The backend processes the payment data.
+4. A QR code is generated.
+5. HMAC-based verification checks data integrity.
+6. The result is returned to the frontend.
+7. The dashboard displays the verification result.
+
+## 📂 Project Structure
+
+```text
+QRShield/
+│
+├── backend/
+│   ├── main.py
+│   └── ...
+│
+├── frontend/
+│   └── ...
+│
+├── .venv/
+├── package.json
+├── pnpm-workspace.yaml
+├── README.md
+└── .gitignore
+```
+
+*The structure above is illustrative. Update it to match the actual repository.*
+
+## ⚙️ Installation and Setup
+
+### Prerequisites
+
+- Python
+- Node.js
+- pnpm
+- Git
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Ajnaaditi30/QR-Payment-Integrity-Simulator.git
+```
+
+```bash
+cd QR-Payment-Integrity-Simulator
+```
+
+*Replace the repository URL and folder name if they differ from your actual GitHub repository.*
+
+### 2. Set Up the Python Environment
 
 ```powershell
-py -3.11 -m venv .venv
+python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r backend\requirements.txt
-$env:QRSHIELD_HMAC_SECRET = "replace-with-a-long-random-local-demo-secret"
+```
+
+### 3. Install Backend Dependencies
+
+```powershell
+pip install -r requirements.txt
+```
+
+### 4. Configure Environment Variable
+
+```powershell
+$env:QRSHIELD_HMAC_SECRET="your-own-long-random-secret"
+```
+
+Never publish your actual secret in GitHub.
+
+### 5. Start the Backend
+
+```powershell
 python -m uvicorn backend.main:app --host 127.0.0.1 --port 8080
 ```
 
-Set the local demo value in the shell only. Do not reuse a production secret.
+### 6. Start the Frontend
 
-### Terminal 2 — React
+Open a second terminal:
 
 ```powershell
 pnpm install
-pnpm --filter @workspace/qrshield run dev
+pnpm --filter @workspace/qrshield dev
 ```
 
-The Vite development server proxies `/api` requests to FastAPI on port 8080.
+Open the application:
 
-## Automated checks
-
-```powershell
-python -m unittest discover -s backend/tests -v
-pnpm --filter @workspace/qrshield run typecheck
+```text
+http://localhost:5173/
 ```
 
-The tests cover valid signatures, modified merchant/amount/reference values, missing and malformed signatures, and in-memory history clearing.
+## 🔐 Security Concept
 
-## Three-minute demonstration
+**HMAC-SHA256 (Hash-Based Message Authentication Code)** is a cryptographic mechanism used to verify the integrity and authenticity of data using a shared secret key.
 
-1. On Overview, select **Generate QR** and create the fictional ₹150 payload.
-2. Open **Tampering Lab**, choose an attack, and inspect the changed fields.
-3. Select **Verify Modified QR**; the backend reports `TAMPERING DETECTED`.
-4. Restore the original payload and verify again; the backend reports `INTEGRITY VERIFIED`.
-5. Open **Activity History** to review or clear the real session events.
+In this project, HMAC verification is used to demonstrate whether payment data has been modified after generation.
 
-HMAC verifies that the signed fields match data produced using a trusted shared secret. It does not independently prove a merchant's identity. The QR image is a data container, not a real payment QR.
+## ⚠️ Limitations
 
-## Source code
+- This is an academic simulation project, not a production payment security solution.
+- HMAC verification depends on secure secret management.
+- A successful integrity check does not independently prove that a merchant or payment recipient is genuine.
+- The project does not replace bank or payment-provider security systems.
 
-All source is in this project. To keep a copy locally, download the project from Replit or connect it to a GitHub repository in the Version Control pane and push the project. Keep `.env` and all real signing secrets out of Git.
+## 🚀 Future Scope
+
+- Merchant identity verification.
+- Suspicious QR code detection.
+- Integration with trusted merchant information.
+- Improved fraud-risk analysis.
+- Cloud deployment and monitoring.
+
+## 🎓 Learning Outcomes
+
+- Understanding QR code payment workflows.
+- Learning API integration between frontend and backend.
+- Applying HMAC-based data integrity verification.
+- Understanding basic cybersecurity concepts.
+- Building a full-stack web application.
+
+## 👩‍💻 Contributors
+
+- Aaditi Ajnadkar
+- [Add other team members, if applicable]
+
+## 📄 License
+
+No open-source license has been specified yet.
+
+---
+
+<p align="center">
+  <b>QRShield – Exploring Security and Integrity in QR-Based Payments</b>
+</p>
