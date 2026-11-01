@@ -50,35 +50,29 @@ The application provides a dashboard to simulate QR generation, verification, an
 
 ## 📸 Project Screenshots
 
-### 1. Main Dashboard
-
-The main dashboard provides an overview of the QRShield application and its security-related features.
-
-![QRShield Dashboard](screenshots/dashboard.png)
-
-### 2. QR Code Generation
+### 1. QR Code Generation
 
 Demonstrates the generation of QR codes using payment-related information.
 
-![QR Code Generation](QR generator.png)
+![QR Code Generation](QR%20generator.png)
 
-### 3. Payment Verification
-
-Shows the verification process used to check the integrity of payment information.
-
-![Payment Verification](screenshots/verification.png)
-
-### 4. Tampering Simulation
+### 2. Tampering Simulation
 
 Demonstrates how modified payment information can be identified through integrity verification.
 
-![Tampering Simulation](screenshots/tampering-detection.png)
+![Tampering Lab](Tampering%20lab.png)
 
-### 5. Security Self-Test
+### 3.AI analyzer 
 
-Shows the self-test interface and its verification results.
+Analyze Risk
 
-![Security Self Test](screenshots/self-test.png)
+(AI%20analyzer.png)
+
+### 4. Activity history 
+
+shows history 
+
+![Activity History](Activity%20history.png)
 
 ---
 
