@@ -66,7 +66,7 @@ Demonstrates how modified payment information can be identified through integrit
 
 Analyze Risk
 
-(AI%20analyzer.png)
+![QRShield Analyzer ](AI%20analyzer.png)
 
 ### 4. Activity history 
 
